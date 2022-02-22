@@ -2,3 +2,7 @@ Django==3.2.6
 gunicorn==20.1.0
 psycopg2-binary==2.9.1
 tweepy==4.4.0
+django_elasticsearch_dsl==7.2.2
+djangorestframework==3.13.1
+django-cors-headers==3.11.0
+django-elasticsearch-dsl-drf==0.22.4
