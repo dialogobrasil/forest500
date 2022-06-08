@@ -1,11 +1,7 @@
 <template>
   <section class="tweets">
     <v-row class="ma-5">
-      <v-col cols="9">
-        <d3-network :net-nodes="nodes" :net-links="links" :options="options">
-        </d3-network>
-      </v-col>
-      <v-col cols="3">
+      <v-col cols="12">
         <v-card class="ma-5 align-center" color="#21ACBF" dark>
           <v-card-title class="">
             <div class="">
@@ -25,10 +21,10 @@
             communities online.
           </v-card-text>
         </v-card>
+      </v-col>
 
-        <v-card class="ma-5 align-center">
-          <v-row>
-            <v-col>
+      <v-col cols="12">
+        <v-card class="mx-5 d-flex align-center">
               <v-autocomplete
                 clear
                 class="mx-5"
@@ -36,8 +32,6 @@
                 v-model="topic_select.select"
                 :items="topic_select.items"
               ></v-autocomplete>
-            </v-col>
-            <v-col>
               <v-autocomplete
                 clear
                 class="mx-5"
@@ -45,8 +39,6 @@
                 v-model="type_select.select"
                 :items="type_select.items"
               ></v-autocomplete>
-            </v-col>
-            <v-col>
               <v-autocomplete
                 clear
                 class="mx-5"
@@ -54,28 +46,33 @@
                 v-model="institution_type.select"
                 :items="institution_type.items"
               ></v-autocomplete>
-            </v-col>
-          </v-row>
 
-          <v-row class="mx-5">
-            <v-col>
               <vue-datepicker-local
                 v-model="range"
                 :local="local"
               ></vue-datepicker-local>
-            </v-col>
-            <v-col>
               <v-btn class="mx-5" text color="#0F3357" @click="getStatus()">
                 HIT
               </v-btn>
-            </v-col>
-          </v-row>
-        </v-card>
-        <v-card>
-          <v-card-title>{{ description.title }}</v-card-title>
-          <v-card-text v-html="description.text"></v-card-text>
         </v-card>
       </v-col>
+
+    <v-col cols='12'>
+      <v-card class="mx-5">
+        <v-card-title>{{ description.title }}</v-card-title>
+        <v-card-text v-html="description.text"></v-card-text>
+      </v-card>
+      <v-progress-circular v-show='loading'
+      indeterminate
+      color="primary"
+    ></v-progress-circular>
+    </v-col>
+
+      <v-responsive min-height="100vh">
+        <d3-network  :net-nodes="nodes" :net-links="links" :options="options" :v-show='loading'>
+        </d3-network>
+      </v-responsive>
+
     </v-row>
   </section>
 </template>
@@ -133,6 +130,7 @@ export default {
       status: [],
       tab: null,
       search: null,
+      loading: true,
       items: [
         { tab: "Companies", to: "/dashboard" },
         { tab: "Financial", to: "/financial" },
@@ -144,7 +142,7 @@ export default {
         items: ["Company", "Financial", "Journalist"],
       },
       topic_select: {
-        select: "monitoring",
+        select: "nature",
         items: [
           "monitoring",
           "nature",
@@ -168,13 +166,15 @@ export default {
       },
       type_select: {
         select: "Mentions",
-        items: ["Mentions", "Hashtags"],
+        items: ["Mentions"],
       },
       menu: false,
       options: {
         force: 100,
         nodeLabels: true,
         strLinks: false,
+        linkWidth: 1,
+        fontSize: 12
       },
     };
   },
@@ -183,6 +183,8 @@ export default {
   },
   methods: {
     getStatus() {
+      this.loading=true
+
       var url_query = `/api/v1/latest-status/?source_panel=${this.institution_type.select.toLowerCase()}&topic=${
         this.topic_select.select == "" ? "" : this.topic_select.select
       }&created_at_gte=${this.dateFormat(
@@ -196,6 +198,7 @@ export default {
         this.links = res.data.links;
 
         this.description = this.user_mention_network;
+        this.loading=false;
       });
     },
     dateFormat(d) {

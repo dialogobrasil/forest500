@@ -524,6 +524,7 @@ export default {
       }&created_at__lte=${this.dateFormat(this.range[1])}&facet=created_at${filters_url}`;
       if (this.search != null && this.search != "")
         url_query = url_query + `&search=${this.search}`;
+      console.log(url_query)
       axios.get(url_query).then((res) => {
         this.status = res.data.results.slice(0, 12);
         this.statusTable.data = res.data.results;
@@ -612,7 +613,6 @@ export default {
           );
         this.updateSeriesLine();
         this.topic_select.items = this.topic_select.items.map(x => x.charAt(0).toUpperCase() + x.slice(1))
-        console.log(this.status[1].topic_set)
       });
     },
     updateSeriesLine() {

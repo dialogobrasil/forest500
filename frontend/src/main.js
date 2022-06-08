@@ -24,7 +24,7 @@ Vue.use(VueMasonry);
 Vue.use(Vuetify)
 
 
-axios.defaults.baseURL = 'http://34.95.230.124:8000'
+axios.defaults.baseURL = 'http://localhost:8000'
 
 
 Vue.config.productionTip = false
